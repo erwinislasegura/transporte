@@ -1,1 +1,0 @@
-export interface Client{id:string;company_id:string;code:string;rut:string;business_name:string;payment_condition:string;requires_oc:string;requires_hes:string;active:boolean}
