@@ -5,7 +5,7 @@
 
 <?php if (!empty($databaseError)): ?><p class="error"><?= e($databaseError) ?></p><?php endif; ?>
 <?php if (!empty($flash['errors'])): ?>
-    <div class="error"><strong>Revise los siguientes datos:</strong><ul><?php foreach ($flash['errors'] as $error): ?><li><?= e($error) ?></li><?php endforeach; ?></ul></div>
+    <div class="form-alert error"><strong>Revise los siguientes datos:</strong><ul><?php foreach ($flash['errors'] as $error): ?><li><?= e($error) ?></li><?php endforeach; ?></ul></div>
 <?php endif; ?>
 
 <form class="panel form-grid" method="post" action="<?= e(url('/clients')) ?>">

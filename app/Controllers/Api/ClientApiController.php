@@ -44,8 +44,8 @@ final class ClientApiController extends Controller
         try {
             $this->json($this->serialize(Client::create($data)), 201);
         } catch (PDOException $exception) {
-            $status = $exception->getCode() === '23000' ? 409 : 500;
-            $detail = $status === 409 ? 'El cliente ya existe.' : 'No fue posible crear el cliente.';
+            $status = $exception->getCode() === '23000' ? 422 : 500;
+            $detail = $status === 422 ? 'La empresa indicada no existe.' : 'No fue posible crear el cliente.';
             $this->json(['detail' => $detail], $status);
         }
     }

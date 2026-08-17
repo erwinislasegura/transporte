@@ -31,6 +31,8 @@ Abrir `http://localhost:8080`. MySQL crea las tablas y la empresa base la primer
 
 El `.htaccess` de la raíz bloquea el acceso web a `.env`, `app`, `config`, `database` y `storage`. Siempre que el hosting permita elegir el document root, apuntar a `public/` continúa siendo la opción más aislada.
 
+Si la base ya fue creada con una revisión anterior de la migración PHP, importar una sola vez `database/migrations/20260817_align_original.sql`. En una instalación nueva no se debe ejecutar esa migración: basta con `01-schema.sql` y `02-seed.sql`.
+
 ## Comprobación de estilos
 
 La vista genera las rutas con `APP_BASE_PATH` o con la subcarpeta detectada automáticamente:
@@ -77,3 +79,5 @@ La vista genera las rutas con `APP_BASE_PATH` o con la subcarpeta detectada auto
 ## Paridad con el proyecto original
 
 El código original implementaba únicamente Dashboard, Clientes, salud de API, modelos de empresa/usuario y utilidades de seguridad. La versión PHP conserva esas funciones. Los módulos de flota, trabajadores, viajes, facturación, taller, RR. HH., prevención, documentos y BI solo estaban enumerados en `docs/ROADMAP.md`; no existían como funciones ni pantallas en el código original.
+
+Las reglas visuales originales se conservan literalmente para Dashboard y Clientes. Los estilos adicionales están limitados a las pantallas PHP nuevas de creación, detalle y errores, por lo que no alteran las vistas que existían en React.

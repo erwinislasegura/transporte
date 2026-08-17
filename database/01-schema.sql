@@ -4,8 +4,7 @@ CREATE TABLE IF NOT EXISTS companies (
     legal_name VARCHAR(180) NOT NULL,
     trade_name VARCHAR(180) NULL,
     active TINYINT(1) NOT NULL DEFAULT 1,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_companies_active (active)
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -17,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(60) NOT NULL,
     active TINYINT(1) NOT NULL DEFAULT 1,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_users_company (company_id),
     INDEX idx_users_role (role),
     CONSTRAINT fk_users_company FOREIGN KEY (company_id) REFERENCES companies(id)
@@ -33,10 +32,9 @@ CREATE TABLE IF NOT EXISTS clients (
     requires_oc VARCHAR(20) NOT NULL DEFAULT 'Opcional',
     requires_hes VARCHAR(20) NOT NULL DEFAULT 'Opcional',
     active TINYINT(1) NOT NULL DEFAULT 1,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uq_clients_company_code (company_id, code),
-    UNIQUE KEY uq_clients_company_rut (company_id, rut),
-    INDEX idx_clients_business_name (business_name),
-    INDEX idx_clients_active (active),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_clients_company (company_id),
+    INDEX idx_clients_code (code),
+    INDEX idx_clients_rut (rut),
     CONSTRAINT fk_clients_company FOREIGN KEY (company_id) REFERENCES companies(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

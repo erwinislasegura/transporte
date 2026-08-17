@@ -19,7 +19,7 @@ final class ClientController extends Controller
             $databaseError = null;
         } catch (PDOException) {
             $clients = [];
-            $databaseError = 'No fue posible cargar los clientes. Verifique la conexión y ejecute database/schema.sql.';
+            $databaseError = 'No fue posible cargar los clientes.';
         }
 
         $this->view('clients/index', [
@@ -71,7 +71,7 @@ final class ClientController extends Controller
         } catch (PDOException $exception) {
             $_SESSION['_flash']['errors'] = [
                 $exception->getCode() === '23000'
-                    ? 'El código o RUT ya está registrado para esta empresa.'
+                    ? 'La empresa seleccionada no existe o no está disponible.'
                     : 'No fue posible guardar el cliente.',
             ];
             $_SESSION['_old'] = $data;
