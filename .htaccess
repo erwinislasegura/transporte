@@ -1,0 +1,27 @@
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloquea código, configuración, base de datos y almacenamiento interno.
+    RewriteRule ^(?:app|config|database|storage)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:Dockerfile|docker-compose\.yml|README\.md)$ - [F,L,NC]
+
+    # Los assets conservan URLs limpias: /assets/styles.css y /assets/app.js.
+    RewriteRule ^assets/(.+)$ public/assets/$1 [L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

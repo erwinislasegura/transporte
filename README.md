@@ -24,11 +24,21 @@ Abrir `http://localhost:8080`. MySQL crea las tablas y la empresa base la primer
 1. Crear una base de datos MySQL y un usuario desde **MySQL Databases**.
 2. Importar `database/01-schema.sql` y `database/02-seed.sql` desde phpMyAdmin.
 3. Copiar `.env.example` como `.env` y completar las credenciales reales.
-4. Configurar el document root del dominio o subdominio para que apunte a la carpeta `public/`.
-5. Confirmar PHP 8.2+ y la extensión `pdo_mysql`.
-6. Usar `APP_BASE_PATH=/subcarpeta` solamente si la aplicación se publica dentro de una subcarpeta.
+4. Subir todo el proyecto al directorio del dominio. El `index.php` y `.htaccess` de la raíz permiten ejecutarlo directamente desde `public_html` y protegen las carpetas internas.
+5. Como alternativa más estricta, configurar el document root para que apunte a `public/`; ambos modos están soportados.
+6. Confirmar PHP 8.2+, `pdo_mysql`, `mod_rewrite` y que cPanel permita reglas `.htaccess`.
+7. Usar `APP_BASE_PATH=/subcarpeta` solamente si la aplicación se publica dentro de una subcarpeta. Los estilos quedarán en `/subcarpeta/assets/styles.css`.
 
-Nunca se debe alojar `.env` dentro del directorio público.
+El `.htaccess` de la raíz bloquea el acceso web a `.env`, `app`, `config`, `database` y `storage`. Siempre que el hosting permita elegir el document root, apuntar a `public/` continúa siendo la opción más aislada.
+
+## Comprobación de estilos
+
+La vista genera las rutas con `APP_BASE_PATH`:
+
+- Dominio raíz: `/assets/styles.css` y `/assets/app.js`.
+- Subcarpeta con `APP_BASE_PATH=/transporte`: `/transporte/assets/styles.css` y `/transporte/assets/app.js`.
+- Document root en `public/`: los archivos existen físicamente dentro de `public/assets/`.
+- Document root en la raíz: `.htaccess` reescribe internamente `assets/*` hacia `public/assets/*`.
 
 ## Rutas principales
 
