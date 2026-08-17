@@ -20,7 +20,7 @@ No requiere Composer ni Node.js.
    - `database/01-schema.sql`
    - `database/02-seed.sql`
    - `database/03-documento-maestro-v1.sql`
-5. Copia `.env.example` como `.env` y usa los datos de XAMPP. Por defecto normalmente son:
+5. Copia `.env.xampp.example` como `.env`. Ya incluye los valores habituales de XAMPP:
 
 ```dotenv
 DB_HOST=127.0.0.1
@@ -120,7 +120,16 @@ No deben escribirse credenciales dentro de controladores o modelos. Para cambiar
 
 ### Diagnóstico de error 500
 
-Si XAMPP muestra un error 500 después de actualizar, confirma que existan `app/Database/Connection.php` y `config/database/connection.php`. Temporalmente configura `APP_DEBUG=true` en `.env`, recarga una vez y revisa el diagnóstico mostrado o `storage/logs/app.log`. Al terminar, vuelve a usar `APP_DEBUG=false`.
+En peticiones locales (`localhost`, `127.0.0.1` o `::1`) la pantalla 500 muestra automáticamente la clase, el mensaje, el archivo y la línea que originaron el fallo. En otros entornos se mantiene oculto salvo que `APP_DEBUG=true`.
+
+También puede ejecutar una revisión completa desde Terminal:
+
+```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/transporte
+/Applications/XAMPP/xamppfiles/bin/php scripts/diagnose.php
+```
+
+El verificador comprueba la versión de PHP, extensiones, archivos, `.env`, permisos, conexión MySQL, tablas, columnas de autenticación y la existencia del Super Administrador. No imprime contraseñas ni secretos. Los incidentes se registran con un código de referencia en `storage/logs/app.log`.
 
 ## Alcance de integraciones
 

@@ -53,14 +53,40 @@ try {
     $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');
 } catch (Throwable $exception) {
     http_response_code(500);
+    $host = strtolower((string) ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? ''));
+    $host = explode(':', $host, 2)[0];
+    $remoteAddress = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+    $isLocalRequest = in_array($host, ['localhost', '127.0.0.1', '::1'], true)
+        || in_array($remoteAddress, ['127.0.0.1', '::1'], true);
+    try {
+        $incidentId = strtoupper(bin2hex(random_bytes(4)));
+    } catch (Throwable) {
+        $incidentId = strtoupper(substr(sha1(uniqid('', true)), 0, 8));
+    }
     $logDirectory = BASE_PATH . '/storage/logs';
     if (is_dir($logDirectory) && is_writable($logDirectory)) {
-        error_log(sprintf("[%s] %s\n%s\n", date(DATE_ATOM), $exception->getMessage(), $exception->getTraceAsString()), 3, $logDirectory . '/app.log');
+        error_log(sprintf(
+            "[%s] [%s] %s: %s en %s:%d\n%s\n",
+            date(DATE_ATOM),
+            $incidentId,
+            $exception::class,
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine(),
+            $exception->getTraceAsString()
+        ), 3, $logDirectory . '/app.log');
     }
 
     (new App\Core\Controller())->view('errors/500', [
         'title' => 'Error interno',
         'activeMenu' => '',
-        'diagnostic' => $debug ? $exception->getMessage() : null,
+        'incidentId' => $incidentId,
+        'diagnostic' => ($debug || $isLocalRequest) ? sprintf(
+            '%s: %s (%s:%d)',
+            $exception::class,
+            $exception->getMessage(),
+            basename($exception->getFile()),
+            $exception->getLine()
+        ) : null,
     ]);
 }
