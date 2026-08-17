@@ -10,6 +10,6 @@ final class HealthController extends Controller
 {
     public function show(): void
     {
-        $this->json(['status' => 'ok', 'service' => 'BGV Enterprise API']);
+        $this->json(['status' => 'ok', 'service' => 'bgv-enterprise-api']);
     }
 }

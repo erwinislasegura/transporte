@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 use App\Controllers\Api\ClientApiController;
 use App\Controllers\Api\HealthController;
+use App\Controllers\Api\ApiController;
 use App\Controllers\ClientController;
 use App\Controllers\DashboardController;
+use App\Core\Cors;
 use App\Core\Router;
 
 require dirname(__DIR__) . '/app/bootstrap.php';
+
+Cors::handle();
 
 $router = new Router();
 
@@ -18,6 +22,9 @@ $router->get('/clients/create', [ClientController::class, 'create']);
 $router->post('/clients', [ClientController::class, 'store']);
 $router->get('/clients/{id}', [ClientController::class, 'show']);
 
+$router->get('/api/v1', [ApiController::class, 'index']);
+$router->get('/api/v1/docs', [ApiController::class, 'docs']);
+$router->get('/api/v1/openapi.json', [ApiController::class, 'openApi']);
 $router->get('/api/v1/health', [HealthController::class, 'show']);
 $router->get('/api/v1/clients', [ClientApiController::class, 'index']);
 $router->post('/api/v1/clients', [ClientApiController::class, 'store']);

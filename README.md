@@ -48,6 +48,9 @@ La vista genera las rutas con `APP_BASE_PATH` o con la subcarpeta detectada auto
 - `POST /clients`: guardar cliente.
 - `GET /clients/{id}`: detalle de cliente.
 - `GET /api/v1/health`: estado de la API.
+- `GET /api/v1`: información base de la API.
+- `GET /api/v1/docs`: documentación navegable.
+- `GET /api/v1/openapi.json`: especificación OpenAPI.
 - `GET|POST /api/v1/clients`: listar o crear clientes.
 - `GET /api/v1/clients/{id}`: consultar un cliente.
 
@@ -67,4 +70,10 @@ La vista genera las rutas con `APP_BASE_PATH` o con la subcarpeta detectada auto
 - Protección CSRF para formularios.
 - Cookies de sesión `HttpOnly` y `SameSite=Lax`.
 - Contraseñas mediante `password_hash` y `password_verify`.
+- Creación de tokens JWT HS256 equivalente a la utilidad del backend original.
+- CORS configurable mediante `CORS_ORIGINS` y soporte de solicitudes `OPTIONS`.
 - Encabezados básicos de seguridad en Apache.
+
+## Paridad con el proyecto original
+
+El código original implementaba únicamente Dashboard, Clientes, salud de API, modelos de empresa/usuario y utilidades de seguridad. La versión PHP conserva esas funciones. Los módulos de flota, trabajadores, viajes, facturación, taller, RR. HH., prevención, documentos y BI solo estaban enumerados en `docs/ROADMAP.md`; no existían como funciones ni pantallas en el código original.

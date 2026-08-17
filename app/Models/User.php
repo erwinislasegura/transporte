@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\Database;
+use App\Core\Security;
 
 final class User
 {
@@ -21,11 +22,11 @@ final class User
 
     public static function hashPassword(string $password): string
     {
-        return password_hash($password, PASSWORD_DEFAULT);
+        return Security::hashPassword($password);
     }
 
     public static function verifyPassword(string $password, string $hash): bool
     {
-        return password_verify($password, $hash);
+        return Security::verifyPassword($password, $hash);
     }
 }
