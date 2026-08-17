@@ -82,7 +82,7 @@ final class AuthController extends Controller
             );
             $statement->execute([
                 'id' => $userId, 'company_id' => $companyId, 'username' => $username, 'full_name' => $fullName,
-                'email' => $email, 'password_hash' => Security::hashPassword($password), 'role' => 'Maestro',
+                'email' => $email, 'password_hash' => Security::hashPassword($password), 'role' => 'Super Administrador',
             ]);
             $db->commit();
             Audit::log('system.initialized', 'system', $userId);
@@ -91,7 +91,7 @@ final class AuthController extends Controller
             $this->redirect('/');
         } catch (PDOException) {
             if ($db->inTransaction()) $db->rollBack();
-            $_SESSION['_flash']['error'] = 'No fue posible crear la cuenta maestra. Verifica la migración MySQL y que el RUT, usuario o correo no estén repetidos.';
+            $_SESSION['_flash']['error'] = 'No fue posible crear la cuenta de Super Administrador. Verifica la migración MySQL y que el RUT, usuario o correo no estén repetidos.';
             $this->redirect('/setup');
         }
     }

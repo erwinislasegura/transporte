@@ -40,8 +40,8 @@ return [
             'email' => ['label' => 'Correo', 'type' => 'email', 'required' => true],
             'password' => ['label' => 'Contraseña', 'type' => 'password', 'required_on_create' => true, 'virtual' => true],
             'role' => ['label' => 'Rol', 'type' => 'select', 'required' => true, 'options' => array_combine(
-                ['Maestro','Gerencial','Supervisor Operativo','Administrativo','Supervisor Taller','Conductor','RR.HH.','Prevencionista','Medio Ambiente'],
-                ['Maestro','Gerencial','Supervisor Operativo','Administrativo','Supervisor Taller','Conductor','RR.HH.','Prevencionista','Medio Ambiente']
+                ['Super Administrador','Maestro','Gerencial','Supervisor Operativo','Administrativo','Supervisor Taller','Conductor','RR.HH.','Prevencionista','Medio Ambiente'],
+                ['Super Administrador','Maestro','Gerencial','Supervisor Operativo','Administrativo','Supervisor Taller','Conductor','RR.HH.','Prevencionista','Medio Ambiente']
             )],
             'active' => ['label' => 'Activo', 'type' => 'checkbox', 'default' => 1],
         ], null, 'Accesos, roles y segregación de funciones.'),

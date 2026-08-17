@@ -5,7 +5,7 @@ DirectoryIndex index.php
     RewriteEngine On
 
     # Bloquea código, configuración, base de datos y almacenamiento interno.
-    RewriteRule ^(?:app|config|database|storage)(?:/|$) - [F,L,NC]
+    RewriteRule ^(?:app|config|database|scripts|storage)(?:/|$) - [F,L,NC]
     RewriteRule ^(?:Dockerfile|docker-compose\.yml|README\.md)$ - [F,L,NC]
 
     # Los assets conservan URLs limpias: /assets/styles.css y /assets/app.js.

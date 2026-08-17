@@ -31,19 +31,23 @@ DB_PASSWORD=
 APP_BASE_PATH=
 ```
 
-6. Abre `http://localhost/transporte/`. La primera visita muestra el asistente para crear el usuario **Maestro**.
+6. Desde Terminal, crea o restablece de forma segura la empresa y el Super Administrador:
+
+```bash
+cd /Applications/XAMPP/xamppfiles/htdocs/transporte
+/Applications/XAMPP/xamppfiles/bin/php scripts/create-super-admin.php
+```
+
+7. Escribe una contraseña inicial de al menos 12 caracteres cuando el instalador la solicite. No se mostrará en pantalla ni quedará guardada en el repositorio.
+8. Abre `http://localhost/transporte/` e ingresa con el usuario `superadmin`.
 
 El `index.php` de la raíz y `.htaccess` resuelven automáticamente la subcarpeta `/transporte`. Los CSS y JavaScript locales se sirven desde `/transporte/assets/*`, por lo que no es necesario mover `public/`.
 
 ## Actualizar una instalación existente
 
-Haz primero una copia de seguridad desde phpMyAdmin. Luego importa **una sola vez**:
+Haz primero una copia de seguridad desde phpMyAdmin. Si aún no aplicaste `03`, impórtala primero. La migración conserva empresas, usuarios y clientes; amplía sus columnas y crea las tablas del Documento Maestro.
 
-```text
-database/03-documento-maestro-v1.sql
-```
-
-La migración es incremental: conserva empresas, usuarios y clientes; amplía sus columnas y crea las tablas del Documento Maestro. Si la instalación proviene de una versión PHP anterior y todavía no aplicaste la alineación de índices, importa antes `database/migrations/20260817_align_original.sql`.
+Después ejecuta `scripts/create-super-admin.php`. El instalador crea la empresa BGV o actualiza la existente y crea/restablece la cuenta `superadmin` sin exponer su contraseña. Si la instalación proviene de una versión PHP anterior y todavía no aplicaste la alineación de índices, importa antes `database/migrations/20260817_align_original.sql`.
 
 ## Instalación con Docker
 
@@ -52,7 +56,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Abre `http://localhost:8080`. Los scripts `01`, `02` y `03` se ejecutan automáticamente al crear un volumen nuevo.
+Abre `http://localhost:8080`. Los scripts `01`, `02` y `03` se ejecutan automáticamente al crear un volumen nuevo. Luego puedes ejecutar `docker compose exec app php scripts/create-super-admin.php`.
 
 ## Instalación en hosting/cPanel
 
@@ -60,13 +64,14 @@ Abre `http://localhost:8080`. Los scripts `01`, `02` y `03` se ejecutan automát
 2. Importa los scripts `01`, `02` y `03` en orden.
 3. Crea `.env` con las credenciales reales.
 4. Sube el proyecto completo a `public_html` o a una subcarpeta.
-5. Verifica PHP 8.2+, `pdo_mysql`, `fileinfo` y `mod_rewrite`.
+5. Ejecuta `php scripts/create-super-admin.php` desde la terminal del hosting.
+6. Verifica PHP 8.2+, `pdo_mysql`, `fileinfo` y `mod_rewrite`.
 
 La raíz ya contiene `index.php`. Su `.htaccess` bloquea el acceso web a `.env`, `app`, `config`, `database` y `storage`, y publica solo los recursos de `public/assets`. Si el hosting permite cambiar el document root, también puede apuntarse a `public/`.
 
 ## Módulos incluidos
 
-- Configuración: usuarios, nueve roles, aprobaciones, centros de costo, faenas, parámetros y auditoría.
+- Configuración: usuarios, diez roles, aprobaciones, centros de costo, faenas, parámetros y auditoría.
 - Comercial: clientes, proveedores, tarifas, cotizaciones, contratos, OC cliente y HES.
 - Operación: programación, jornadas, múltiples viajes, eventos, guías y liquidaciones.
 - Flota y taller: equipos, propietarios, arriendos, talleres, fallas, OT y combustible.
@@ -78,7 +83,7 @@ La raíz ya contiene `index.php`. Su `.htaccess` bloquea el acceso web a `.env`,
 
 ## Roles
 
-Maestro, Gerencial, Supervisor Operativo, Administrativo, Supervisor Taller, Conductor, RR.HH., Prevencionista y Medio Ambiente. El menú y las operaciones de creación/edición se filtran según el rol activo.
+Super Administrador, Maestro, Gerencial, Supervisor Operativo, Administrativo, Supervisor Taller, Conductor, RR.HH., Prevencionista y Medio Ambiente. El menú y las operaciones de creación/edición se filtran según el rol activo.
 
 ## Rutas principales
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'Super Administrador' => ['*'],
     'Maestro' => ['*'],
     'Gerencial' => ['dashboard', 'commercial', 'operations', 'fleet', 'workshop', 'fuel', 'purchasing', 'billing', 'finance', 'hr', 'hse', 'environment', 'documents', 'bi', 'approvals'],
     'Supervisor Operativo' => ['dashboard', 'commercial.view', 'operations', 'fleet.view', 'documents', 'bi.view'],
