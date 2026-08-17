@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block content %}
+<h1>RR.HH. y Asistencia</h1><div class="cards">
+<div><b>{{metrics.active_workers}}</b><span>Trabajadores activos</span></div>
+<div><b>{{"{:.2f}".format(metrics.overtime_pending)}} h</b><span>Horas extra por validar</span></div>
+<div><b>${{"{:,.0f}".format(metrics.per_diems_pending)}}</b><span>Viáticos pendientes</span></div>
+<div><b>${{"{:,.0f}".format(metrics.payroll_cost)}}</b><span>Costo laboral calculado</span></div></div>
+<table><tr><th>Fecha</th><th>Trabajador</th><th>Turno</th><th>Horas netas</th><th>Horas extra</th><th>Estado</th></tr>
+{% for r in attendance %}<tr><td>{{r.attendance_date}}</td><td>{{r.full_name}}</td><td>{{r.shift_name or '-'}}</td><td>{{r.net_hours}}</td><td>{{r.overtime_hours}}</td><td>{{r.validation_status}}</td></tr>{% endfor %}</table>
+{% endblock %}

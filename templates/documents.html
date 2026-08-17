@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block content %}
+<h1>Gestión Documental</h1><form method="post" action="{{url_for('document_new')}}" class="grid">
+<select name="document_type"><option>Licencia</option><option>Contrato</option><option>OC</option><option>HES</option><option>Guía</option><option>Seguro</option><option>Revisión técnica</option><option>Certificado</option><option>Fotografía</option><option>Otro</option></select>
+<input name="file_name" placeholder="Nombre archivo" required><input name="storage_path" placeholder="Ruta/URI" required>
+<select name="entity_type"><option>Trabajador</option><option>Activo</option><option>Cliente</option><option>Contrato</option><option>Empresa</option><option>Incidente</option></select>
+<input name="entity_id" type="number" placeholder="ID entidad" required><input name="issue_date" type="date"><input name="expiry_date" type="date"><input name="notes" placeholder="Notas"><button>Registrar documento</button></form>
+<table><tr><th>Tipo</th><th>Archivo</th><th>Entidad</th><th>Emisión</th><th>Vence</th><th>Estado</th><th>Cargado por</th></tr>
+{% for r in rows %}<tr><td>{{r.document_type}}</td><td>{{r.file_name}}</td><td>{{r.entity_type}} #{{r.entity_id}}</td><td>{{r.issue_date or '-'}}</td><td>{{r.expiry_date or '-'}}</td><td>{{r.status}}</td><td>{{r.uploader or '-'}}</td></tr>{% endfor %}</table>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block content %}
+<h1>Control de Costos</h1>
+<div class="cards">
+<div><b>${{"{:,.0f}".format(metrics.cost_total)}}</b><span>Costo neto recuperable</span></div>
+<div><b>{{"{:,.0f}".format(metrics.fuel_liters)}} L</b><span>Combustible cargado</span></div>
+<div><b>${{"{:,.0f}".format(metrics.workshop_cost)}}</b><span>Taller asumido por BGV</span></div>
+<div><b>${{"{:,.0f}".format(metrics.rental_monthly)}}</b><span>Arriendos mensuales</span></div>
+</div>
+<div class="two"><section><h2>Costos por categoría</h2><table><tr><th>Categoría</th><th>Monto</th></tr>
+{% for r in by_category %}<tr><td>{{r.category}}</td><td>${{"{:,.0f}".format(r.amount)}}</td></tr>{% endfor %}</table></section>
+<section><h2>Costos por activo</h2><table><tr><th>Activo</th><th>Monto</th></tr>
+{% for r in by_asset %}<tr><td>{{r.code}}</td><td>${{"{:,.0f}".format(r.amount)}}</td></tr>{% endfor %}</table></section></div>
+{% endblock %}

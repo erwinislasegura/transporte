@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block content %}
+<h1>Entrega de EPP</h1><form method="post" action="{{url_for('ppe_deliver')}}" class="grid">
+<select name="worker_id">{% for w in workers %}<option value="{{w.id}}">{{w.full_name}}</option>{% endfor %}</select>
+<select name="ppe_item_id">{% for p in items %}<option value="{{p.id}}">{{p.name}}</option>{% endfor %}</select>
+<input name="delivery_date" type="date" required><input name="quantity" type="number" value="1"><button>Registrar entrega</button></form>
+<table><tr><th>Fecha</th><th>Trabajador</th><th>EPP</th><th>Cantidad</th><th>Reposición</th><th>Estado</th></tr>
+{% for r in deliveries %}<tr><td>{{r.delivery_date}}</td><td>{{r.full_name}}</td><td>{{r.ppe_name}}</td><td>{{r.quantity}}</td><td>{{r.replacement_due_date or '-'}}</td><td>{{r.status}}</td></tr>{% endfor %}</table>
+{% endblock %}

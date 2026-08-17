@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block content %}
+<h1>Prevención y Medio Ambiente</h1><div class="cards">
+<div><b>{{metrics.open_incidents}}</b><span>Incidentes abiertos</span></div>
+<div><b>{{metrics.overdue_actions}}</b><span>Acciones vencidas</span></div>
+<div><b>{{metrics.open_environmental}}</b><span>Eventos ambientales abiertos</span></div>
+<div><b>{{metrics.expiring_accreditations}}</b><span>Acreditaciones por vencer</span></div></div>
+<div class="two"><section><h2>Incidentes recientes</h2><table><tr><th>Código</th><th>Fecha</th><th>Tipo</th><th>Severidad</th><th>Estado</th></tr>
+{% for r in incidents %}<tr><td>{{r.code}}</td><td>{{r.incident_date}}</td><td>{{r.incident_type}}</td><td>{{r.severity}}</td><td>{{r.status}}</td></tr>{% endfor %}</table></section>
+<section><h2>Acciones prioritarias</h2><table><tr><th>Acción</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr>
+{% for r in actions %}<tr><td>{{r.action_code}}</td><td>{{r.responsible_name or '-'}}</td><td>{{r.due_date}}</td><td>{{r.status}}</td></tr>{% endfor %}</table></section></div>
+{% endblock %}

@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Usuarios</h1><table><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Estado</th></tr>{% for r in rows %}<tr><td>{{r.username}}</td><td>{{r.full_name}}</td><td>{{r.role}}</td><td>{{'Activo' if r.active else 'Inactivo'}}</td></tr>{% endfor %}</table>{% endblock %}

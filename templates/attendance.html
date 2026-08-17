@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<h1>Asistencia</h1>{% if session.get('role') in ['Maestro','Administrativo','Supervisor Operativo'] %}<form method="post" action="{{url_for('attendance_sync')}}" class="closebox"><button>Sincronizar jornadas cerradas</button></form>{% endif %}
+<table><tr><th>Fecha</th><th>Trabajador</th><th>Jornada</th><th>Turno</th><th>Entrada</th><th>Salida</th><th>Brutas</th><th>Colación</th><th>Netas</th><th>Ordinarias</th><th>Extra</th><th>Estado</th><th>Aprobación</th></tr>
+{% for r in rows %}<tr><td>{{r.attendance_date}}</td><td>{{r.full_name}}</td><td>{{r.journey_code or '-'}}</td><td>{{r.shift_name or '-'}}</td><td>{{r.entry_time}}</td><td>{{r.exit_time}}</td><td>{{r.gross_hours}}</td><td>{{r.meal_hours}}</td><td>{{r.net_hours}}</td><td>{{r.ordinary_hours}}</td><td>{{r.overtime_hours}}</td><td>{{r.validation_status}}</td><td>
+{% if r.validation_status=='Pendiente' and session.get('role') in ['Maestro','Supervisor Operativo'] %}<form method="post" action="{{url_for('attendance_approve',aid=r.id)}}"><button>Supervisor</button></form>{% endif %}
+{% if r.validation_status in ['Pendiente','Aprobada Supervisor'] and session.get('role') in ['Maestro','Administrativo'] %}<form method="post" action="{{url_for('attendance_validate',aid=r.id)}}"><button>Validar RR.HH.</button></form>{% endif %}
+</td></tr>{% endfor %}</table>{% endblock %}

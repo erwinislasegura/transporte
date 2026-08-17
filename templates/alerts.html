@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}
+<h1>Centro de Alertas</h1>{% if session.get('role') in ['Maestro','Administrativo','Supervisor Operativo','Supervisor Taller'] %}<form method="post" action="{{url_for('alerts_generate')}}" class="closebox"><button>Generar alertas automáticas</button></form>{% endif %}
+<table><tr><th>Severidad</th><th>Tipo</th><th>Título</th><th>Mensaje</th><th>Vence</th><th>Asignado</th><th>Estado</th><th>Cerrar</th></tr>
+{% for r in rows %}<tr><td>{{r.severity}}</td><td>{{r.alert_type}}</td><td>{{r.title}}</td><td>{{r.message}}</td><td>{{r.due_date or '-'}}</td><td>{{r.assigned_name or '-'}}</td><td>{{r.status}}</td><td>{% if r.status=='Abierta' and session.get('role') in ['Maestro','Administrativo','Supervisor Operativo','Supervisor Taller'] %}<form method="post" action="{{url_for('alert_close',aid=r.id)}}"><button>Cerrar</button></form>{% endif %}</td></tr>{% endfor %}</table>
+{% endblock %}
