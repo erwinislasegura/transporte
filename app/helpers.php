@@ -11,10 +11,28 @@ function e(mixed $value): string
 
 function url(string $path = ''): string
 {
-    $base = rtrim((string) Env::get('APP_BASE_PATH', ''), '/');
+    $base = base_path();
     $path = '/' . ltrim($path, '/');
 
     return $base . ($path === '/' ? '/' : $path);
+}
+
+function base_path(): string
+{
+    $configured = trim((string) Env::get('APP_BASE_PATH', ''));
+    if ($configured !== '') {
+        return '/' . trim($configured, '/');
+    }
+
+    // Detecta automáticamente /transporte cuando se ejecuta desde htdocs/transporte.
+    $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
+    $directory = str_replace('\\', '/', dirname($scriptName));
+
+    if ($directory === '.' || $directory === '/' || $directory === '\\') {
+        return '';
+    }
+
+    return '/' . trim($directory, '/');
 }
 
 function asset(string $path): string

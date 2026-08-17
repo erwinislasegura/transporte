@@ -27,13 +27,13 @@ Abrir `http://localhost:8080`. MySQL crea las tablas y la empresa base la primer
 4. Subir todo el proyecto al directorio del dominio. El `index.php` y `.htaccess` de la raíz permiten ejecutarlo directamente desde `public_html` y protegen las carpetas internas.
 5. Como alternativa más estricta, configurar el document root para que apunte a `public/`; ambos modos están soportados.
 6. Confirmar PHP 8.2+, `pdo_mysql`, `mod_rewrite` y que cPanel permita reglas `.htaccess`.
-7. Usar `APP_BASE_PATH=/subcarpeta` solamente si la aplicación se publica dentro de una subcarpeta. Los estilos quedarán en `/subcarpeta/assets/styles.css`.
+7. `APP_BASE_PATH` puede quedar vacío: la aplicación detecta automáticamente `/transporte` al ejecutarse desde `htdocs/transporte`. También puede definirse manualmente como `/transporte`.
 
 El `.htaccess` de la raíz bloquea el acceso web a `.env`, `app`, `config`, `database` y `storage`. Siempre que el hosting permita elegir el document root, apuntar a `public/` continúa siendo la opción más aislada.
 
 ## Comprobación de estilos
 
-La vista genera las rutas con `APP_BASE_PATH`:
+La vista genera las rutas con `APP_BASE_PATH` o con la subcarpeta detectada automáticamente:
 
 - Dominio raíz: `/assets/styles.css` y `/assets/app.js`.
 - Subcarpeta con `APP_BASE_PATH=/transporte`: `/transporte/assets/styles.css` y `/transporte/assets/app.js`.
