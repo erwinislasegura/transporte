@@ -13,11 +13,10 @@ final class Auth
 
     public static function hasUsers(): bool
     {
-        try {
-            return (int) Connection::connection()->query('SELECT COUNT(*) FROM users')->fetchColumn() > 0;
-        } catch (PDOException) {
-            return false;
-        }
+        // Un error de conexión o de esquema no equivale a una instalación vacía.
+        // La excepción debe llegar al manejador global para evitar abrir el
+        // configurador por accidente en producción.
+        return (int) Connection::connection()->query('SELECT COUNT(*) FROM users')->fetchColumn() > 0;
     }
 
     public static function attempt(string $identity, string $password): bool

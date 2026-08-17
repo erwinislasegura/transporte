@@ -62,10 +62,18 @@ Abre `http://localhost:8080`. Los scripts `01`, `02` y `03` se ejecutan automát
 
 1. Crea la base y el usuario MySQL.
 2. Importa los scripts `01`, `02` y `03` en orden.
-3. Crea `.env` con las credenciales reales.
+3. Copia `.env.cpanel.example` como `.env` y reemplaza las credenciales. En cPanel el nombre de la base y del usuario normalmente incluyen el prefijo de la cuenta, por ejemplo `micuenta_bgv_enterprise`.
 4. Sube el proyecto completo a `public_html` o a una subcarpeta.
 5. Ejecuta `php scripts/create-super-admin.php` desde la terminal del hosting.
 6. Verifica PHP 8.2+, `pdo_mysql`, `fileinfo` y `mod_rewrite`.
+
+Ejecuta el diagnóstico antes de abrir la web:
+
+```bash
+php scripts/diagnose.php
+```
+
+Si existe cualquier error de conexión o falta la tabla `users`, la aplicación muestra un error de base de datos y **no** abre el configurador. El configurador solo aparece cuando la consulta a `users` funciona correctamente y devuelve cero registros.
 
 La raíz ya contiene `index.php`. Su `.htaccess` bloquea el acceso web a `.env`, `app`, `config`, `database` y `storage`, y publica solo los recursos de `public/assets`. Si el hosting permite cambiar el document root, también puede apuntarse a `public/`.
 

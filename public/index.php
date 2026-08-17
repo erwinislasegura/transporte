@@ -58,6 +58,8 @@ try {
     $remoteAddress = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
     $isLocalRequest = in_array($host, ['localhost', '127.0.0.1', '::1'], true)
         || in_array($remoteAddress, ['127.0.0.1', '::1'], true);
+    $previousException = $exception->getPrevious();
+    $isDatabaseError = $exception instanceof PDOException || $previousException instanceof PDOException;
     try {
         $incidentId = strtoupper(bin2hex(random_bytes(4)));
     } catch (Throwable) {
@@ -81,6 +83,9 @@ try {
         'title' => 'Error interno',
         'activeMenu' => '',
         'incidentId' => $incidentId,
+        'operationalMessage' => $isDatabaseError
+            ? 'No fue posible consultar la base de datos configurada. En cPanel revise DB_HOST, el nombre completo con prefijo, el usuario asignado a la base y sus privilegios.'
+            : null,
         'diagnostic' => ($debug || $isLocalRequest) ? sprintf(
             '%s: %s (%s:%d)',
             $exception::class,
