@@ -12,6 +12,25 @@ $assetMarker = '/assets/';
 $assetPosition = strpos($requestPath, $assetMarker);
 
 // Compatibilidad con `php -S localhost:8080 index.php`, que ignora .htaccess.
+if (PHP_SAPI === 'cli-server') {
+    $publicFileName = basename($requestPath);
+    $publicFiles = [
+        'manifest.webmanifest' => 'application/manifest+json; charset=utf-8',
+        'sw.js' => 'application/javascript; charset=utf-8',
+        'offline.html' => 'text/html; charset=utf-8',
+    ];
+
+    if (isset($publicFiles[$publicFileName])) {
+        $publicFile = __DIR__ . '/public/' . $publicFileName;
+        if (is_file($publicFile)) {
+            header('Content-Type: ' . $publicFiles[$publicFileName]);
+            header('Content-Length: ' . filesize($publicFile));
+            readfile($publicFile);
+            exit;
+        }
+    }
+}
+
 if (PHP_SAPI === 'cli-server' && $assetPosition !== false) {
     $relativeAsset = substr($requestPath, $assetPosition + strlen($assetMarker));
     $assetRoot = realpath(__DIR__ . '/public/assets');

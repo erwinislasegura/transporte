@@ -8,6 +8,7 @@ Plataforma empresarial PHP MVC + MySQL para transporte y logística, implementad
 - MySQL 8 o MariaDB 10.6+.
 - Apache con `mod_rewrite` y `mod_headers`.
 - Conexión a internet para cargar Bootstrap 5.3, Bootstrap Icons y la fuente Inter desde CDN.
+- HTTPS activo en producción para instalar la aplicación en celulares, tablets y computadores. `localhost` funciona sin certificado.
 
 No requiere Composer ni Node.js.
 
@@ -76,6 +77,18 @@ php scripts/diagnose.php
 Si existe cualquier error de conexión o falta la tabla `users`, la aplicación muestra un error de base de datos y **no** abre el configurador. El configurador solo aparece cuando la consulta a `users` funciona correctamente y devuelve cero registros.
 
 La raíz ya contiene `index.php`. Su `.htaccess` bloquea el acceso web a `.env`, `app`, `config`, `database` y `storage`, y publica solo los recursos de `public/assets`. Si el hosting permite cambiar el document root, también puede apuntarse a `public/`.
+
+## Aplicación instalable (PWA)
+
+BGV Enterprise incluye manifiesto, iconos adaptativos, service worker y pantalla sin conexión. Se puede instalar desde Chrome o Edge en Android, Windows, macOS y ChromeOS. En iPhone o iPad se instala desde Safari con **Compartir > Agregar a pantalla de inicio**.
+
+1. Activa un certificado SSL en el dominio de cPanel.
+2. Abre BGV Enterprise e inicia sesión.
+3. Usa el botón de descarga de la barra superior o la opción **Instalar aplicación** del navegador.
+
+La instalación funciona tanto en la raíz del dominio como en una subcarpeta. Por seguridad, el service worker no guarda en caché páginas autenticadas, formularios ni respuestas de la base de datos. Sin conexión solo se muestra una pantalla de estado; para consultar o modificar información operacional se requiere internet.
+
+Los componentes PWA están en `public/manifest.webmanifest`, `public/sw.js`, `public/offline.html` y `public/assets/icons/`.
 
 ## Módulos incluidos
 
