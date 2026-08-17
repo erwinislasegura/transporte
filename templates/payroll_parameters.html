@@ -1,4 +1,0 @@
-{% extends "base.html" %}{% block content %}
-<h1>Parámetros de Remuneraciones</h1><div class="flash error">Los porcentajes son datos demostrativos y deben validarse con RR.HH., Previred, el contador y la normativa vigente antes de uso real.</div>
-<table><tr><th>Código</th><th>Parámetro</th><th>Vigencia</th><th>Porcentaje</th><th>Monto fijo</th><th>Estado</th></tr>
-{% for r in rows %}<tr><td>{{r.parameter_code}}</td><td>{{r.parameter_name}}</td><td>{{r.effective_from}}</td><td>{{r.percentage or '-'}}</td><td>{{r.fixed_amount or '-'}}</td><td>{{r.status}}</td></tr>{% endfor %}</table>{% endblock %}

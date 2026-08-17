@@ -1,9 +1,0 @@
-{% extends "base.html" %}{% block content %}
-<h1>Acreditaciones</h1><form method="post" action="{{url_for('accreditation_new')}}" class="grid">
-<select name="requirement_id">{% for r in requirements %}<option value="{{r.id}}">{{r.entity_type}} · {{r.requirement_name}}</option>{% endfor %}</select>
-<select name="entity_type"><option>Trabajador</option><option>Activo</option><option>Empresa</option></select><input name="entity_id" type="number" placeholder="ID entidad" required>
-<input name="approval_date" type="date"><input name="expiry_date" type="date"><select name="status"><option>Pendiente</option><option>Aprobada</option><option>Rechazada</option><option>Vencida</option></select>
-<input name="observations" placeholder="Observaciones"><button>Registrar</button></form>
-<table><tr><th>Requisito</th><th>Entidad</th><th>ID</th><th>Aprobación</th><th>Vence</th><th>Estado</th><th>Documento</th></tr>
-{% for r in rows %}<tr><td>{{r.requirement_name}}</td><td>{{r.entity_type}}</td><td>{{r.entity_id}}</td><td>{{r.approval_date or '-'}}</td><td>{{r.expiry_date or '-'}}</td><td>{{r.status}}</td><td>{{r.file_name or '-'}}</td></tr>{% endfor %}</table>
-{% endblock %}

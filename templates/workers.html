@@ -1,1 +1,0 @@
-{% extends "base.html" %}{% block content %}<h1>Trabajadores</h1><table><tr><th>RUT</th><th>Nombre</th><th>Cargo</th><th>Turno</th><th>Estado</th></tr>{% for r in rows %}<tr><td>{{r.rut}}</td><td>{{r.full_name}}</td><td>{{r.position}}</td><td>{{r.shift}}</td><td>{{r.status}}</td></tr>{% endfor %}</table>{% endblock %}

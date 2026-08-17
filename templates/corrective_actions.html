@@ -1,9 +1,0 @@
-{% extends "base.html" %}{% block content %}
-<h1>Acciones Correctivas</h1><form method="post" action="{{url_for('corrective_action_new')}}" class="grid">
-<select name="source_type"><option>Incidente</option><option>Inspección</option><option>Auditoría</option><option>Ambiental</option></select>
-<input name="source_id" type="number" placeholder="ID origen"><input name="description" placeholder="Acción" required>
-<select name="responsible_user_id"><option value="">Responsable</option>{% for u in users %}<option value="{{u.id}}">{{u.full_name}}</option>{% endfor %}</select>
-<input name="due_date" type="date" required><button>Crear acción</button></form>
-<table><tr><th>Código</th><th>Origen</th><th>Descripción</th><th>Responsable</th><th>Vence</th><th>Estado</th><th>Cierre</th></tr>
-{% for r in rows %}<tr><td>{{r.action_code}}</td><td>{{r.source_type}} #{{r.source_id}}</td><td>{{r.description}}</td><td>{{r.responsible_name or '-'}}</td><td>{{r.due_date}}</td><td>{{r.status}}</td><td>{% if r.status!='Cerrada' %}<form method="post" action="{{url_for('corrective_action_close',aid=r.id)}}" class="mini"><input name="effectiveness_check" placeholder="Verificación"><button>Cerrar</button></form>{% endif %}</td></tr>{% endfor %}</table>
-{% endblock %}
