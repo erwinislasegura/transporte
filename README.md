@@ -1,83 +1,107 @@
-# BGV Enterprise · PHP MVC
+# BGV Enterprise · Foundation 1.0
 
-Migración del proyecto Transporte a PHP MVC y MySQL, conservando la interfaz visual original.
+Plataforma empresarial PHP MVC + MySQL para transporte y logística, implementada a partir del **Documento Maestro v1.0**. La interfaz usa Bootstrap 5.3, una identidad visual responsive y navegación protegida por roles.
 
 ## Requisitos
 
-- PHP 8.2 o superior con `pdo_mysql`
-- MySQL 8 o MariaDB 10.6+
-- Apache con `mod_rewrite` (recomendado)
+- PHP 8.2 o superior con `pdo_mysql` y `fileinfo`.
+- MySQL 8 o MariaDB 10.6+.
+- Apache con `mod_rewrite` y `mod_headers`.
+- Conexión a internet para cargar Bootstrap 5.3, Bootstrap Icons y la fuente Inter desde CDN.
 
 No requiere Composer ni Node.js.
 
-## Instalación local con Docker
+## Instalación en XAMPP para macOS
+
+1. Copia la carpeta del proyecto como `/Applications/XAMPP/xamppfiles/htdocs/transporte`.
+2. Inicia **Apache** y **MySQL** desde XAMPP Manager.
+3. En `http://localhost/phpmyadmin`, crea una base UTF-8 llamada `bgv_enterprise`.
+4. Importa, en este orden:
+   - `database/01-schema.sql`
+   - `database/02-seed.sql`
+   - `database/03-documento-maestro-v1.sql`
+5. Copia `.env.example` como `.env` y usa los datos de XAMPP. Por defecto normalmente son:
+
+```dotenv
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bgv_enterprise
+DB_USERNAME=root
+DB_PASSWORD=
+APP_BASE_PATH=
+```
+
+6. Abre `http://localhost/transporte/`. La primera visita muestra el asistente para crear el usuario **Maestro**.
+
+El `index.php` de la raíz y `.htaccess` resuelven automáticamente la subcarpeta `/transporte`. Los CSS y JavaScript locales se sirven desde `/transporte/assets/*`, por lo que no es necesario mover `public/`.
+
+## Actualizar una instalación existente
+
+Haz primero una copia de seguridad desde phpMyAdmin. Luego importa **una sola vez**:
+
+```text
+database/03-documento-maestro-v1.sql
+```
+
+La migración es incremental: conserva empresas, usuarios y clientes; amplía sus columnas y crea las tablas del Documento Maestro. Si la instalación proviene de una versión PHP anterior y todavía no aplicaste la alineación de índices, importa antes `database/migrations/20260817_align_original.sql`.
+
+## Instalación con Docker
 
 ```bash
 cp .env.example .env
 docker compose up --build
 ```
 
-Abrir `http://localhost:8080`. MySQL crea las tablas y la empresa base la primera vez que se inicia el volumen.
+Abre `http://localhost:8080`. Los scripts `01`, `02` y `03` se ejecutan automáticamente al crear un volumen nuevo.
 
-## Instalación en cPanel
+## Instalación en hosting/cPanel
 
-1. Crear una base de datos MySQL y un usuario desde **MySQL Databases**.
-2. Importar `database/01-schema.sql` y `database/02-seed.sql` desde phpMyAdmin.
-3. Copiar `.env.example` como `.env` y completar las credenciales reales.
-4. Subir todo el proyecto al directorio del dominio. El `index.php` y `.htaccess` de la raíz permiten ejecutarlo directamente desde `public_html` y protegen las carpetas internas.
-5. Como alternativa más estricta, configurar el document root para que apunte a `public/`; ambos modos están soportados.
-6. Confirmar PHP 8.2+, `pdo_mysql`, `mod_rewrite` y que cPanel permita reglas `.htaccess`.
-7. `APP_BASE_PATH` puede quedar vacío: la aplicación detecta automáticamente `/transporte` al ejecutarse desde `htdocs/transporte`. También puede definirse manualmente como `/transporte`.
+1. Crea la base y el usuario MySQL.
+2. Importa los scripts `01`, `02` y `03` en orden.
+3. Crea `.env` con las credenciales reales.
+4. Sube el proyecto completo a `public_html` o a una subcarpeta.
+5. Verifica PHP 8.2+, `pdo_mysql`, `fileinfo` y `mod_rewrite`.
 
-El `.htaccess` de la raíz bloquea el acceso web a `.env`, `app`, `config`, `database` y `storage`. Siempre que el hosting permita elegir el document root, apuntar a `public/` continúa siendo la opción más aislada.
+La raíz ya contiene `index.php`. Su `.htaccess` bloquea el acceso web a `.env`, `app`, `config`, `database` y `storage`, y publica solo los recursos de `public/assets`. Si el hosting permite cambiar el document root, también puede apuntarse a `public/`.
 
-Si la base ya fue creada con una revisión anterior de la migración PHP, importar una sola vez `database/migrations/20260817_align_original.sql`. En una instalación nueva no se debe ejecutar esa migración: basta con `01-schema.sql` y `02-seed.sql`.
+## Módulos incluidos
 
-## Comprobación de estilos
+- Configuración: usuarios, nueve roles, aprobaciones, centros de costo, faenas, parámetros y auditoría.
+- Comercial: clientes, proveedores, tarifas, cotizaciones, contratos, OC cliente y HES.
+- Operación: programación, jornadas, múltiples viajes, eventos, guías y liquidaciones.
+- Flota y taller: equipos, propietarios, arriendos, talleres, fallas, OT y combustible.
+- Compras y finanzas: solicitudes, OC proveedor, facturas, estados de pago, cobranza, movimientos y presupuestos.
+- Personas: trabajadores, turnos, asistencia, horas extra, viáticos y remuneraciones informativas.
+- HSE y ambiente: incidentes, inspecciones, acciones correctivas, eventos ambientales y acreditaciones.
+- Control documental: archivos, vencimientos, responsables y alertas.
+- Centro de Control: KPIs operacionales, cartera, costos, alertas y actividad auditada.
 
-La vista genera las rutas con `APP_BASE_PATH` o con la subcarpeta detectada automáticamente:
+## Roles
 
-- Dominio raíz: `/assets/styles.css` y `/assets/app.js`.
-- Subcarpeta con `APP_BASE_PATH=/transporte`: `/transporte/assets/styles.css` y `/transporte/assets/app.js`.
-- Document root en `public/`: los archivos existen físicamente dentro de `public/assets/`.
-- Document root en la raíz: `.htaccess` reescribe internamente `assets/*` hacia `public/assets/*`.
+Maestro, Gerencial, Supervisor Operativo, Administrativo, Supervisor Taller, Conductor, RR.HH., Prevencionista y Medio Ambiente. El menú y las operaciones de creación/edición se filtran según el rol activo.
 
 ## Rutas principales
 
-- `GET /`: dashboard.
-- `GET /clients`: listado de clientes.
-- `GET /clients/create`: formulario de creación.
-- `POST /clients`: guardar cliente.
-- `GET /clients/{id}`: detalle de cliente.
-- `GET /api/v1/health`: estado de la API.
-- `GET /api/v1`: información base de la API.
-- `GET /api/v1/docs`: documentación navegable.
-- `GET /api/v1/openapi.json`: especificación OpenAPI.
-- `GET|POST /api/v1/clients`: listar o crear clientes.
-- `GET /api/v1/clients/{id}`: consultar un cliente.
+- `GET|POST /setup`: configuración inicial.
+- `GET|POST /login`, `POST /logout`: autenticación.
+- `GET /`: Centro de Control.
+- `GET /modules/{modulo}`: listado y búsqueda.
+- `GET|POST /modules/{modulo}/create`: creación.
+- `GET /modules/{modulo}/{id}`: detalle.
+- `GET|POST /modules/{modulo}/{id}/edit`: edición.
+- `POST /modules/{modulo}/{id}/archive`: cierre lógico sin borrar trazabilidad.
+- `GET /api/v1/docs`: documentación de la API existente.
 
-## Arquitectura
+## Seguridad y trazabilidad
 
-- `app/Controllers`: controladores web y API.
-- `app/Models`: acceso a MySQL mediante PDO.
-- `app/Views`: vistas PHP del dashboard y clientes.
-- `app/Core`: router, conexión, entorno, CSRF y controlador base.
-- `public`: único directorio expuesto por el servidor web.
-- `database`: esquema y datos iniciales.
+- PDO con consultas preparadas y alcance por empresa.
+- Contraseñas con `password_hash`/`password_verify`.
+- CSRF en formularios y sesión `HttpOnly`, `SameSite=Lax` y modo estricto.
+- Escape HTML centralizado y validación de identificadores SQL.
+- Carga documental validada por MIME, tamaño máximo de 15 MB y almacenamiento fuera de `public/`.
+- Bitácora antes/después para creación, edición, cierre e inicio/cierre de sesión.
+- Registros cerrados o anulados en vez de borrado físico.
 
-## Seguridad incluida
+## Alcance de integraciones
 
-- Consultas preparadas con PDO.
-- Escape HTML centralizado.
-- Protección CSRF para formularios.
-- Cookies de sesión `HttpOnly` y `SameSite=Lax`.
-- Contraseñas mediante `password_hash` y `password_verify`.
-- Creación de tokens JWT HS256 equivalente a la utilidad del backend original.
-- CORS configurable mediante `CORS_ORIGINS` y soporte de solicitudes `OPTIONS`.
-- Encabezados básicos de seguridad en Apache.
-
-## Paridad con el proyecto original
-
-El código original implementaba únicamente Dashboard, Clientes, salud de API, modelos de empresa/usuario y utilidades de seguridad. La versión PHP conserva esas funciones. Los módulos de flota, trabajadores, viajes, facturación, taller, RR. HH., prevención, documentos y BI solo estaban enumerados en `docs/ROADMAP.md`; no existían como funciones ni pantallas en el código original.
-
-Las reglas visuales originales se conservan literalmente para Dashboard y Clientes. Los estilos adicionales están limitados a las pantallas PHP nuevas de creación, detalle y errores, por lo que no alteran las vistas que existían en React.
+La versión deja preparados datos y flujos internos. Las integraciones bancarias, SII, Previred, firma electrónica, geolocalización, app móvil nativa, IA predictiva y contabilidad estatutaria completa siguen como extensiones posteriores, tal como establece el Documento Maestro.

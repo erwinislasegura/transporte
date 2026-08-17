@@ -4,3 +4,5 @@
 /.vscode/
 /storage/logs/*.log
 !/storage/logs/.gitkeep
+/storage/uploads/*
+!/storage/uploads/.gitkeep
