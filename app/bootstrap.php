@@ -16,6 +16,17 @@ spl_autoload_register(static function (string $class): void {
     $file = BASE_PATH . '/app/' . str_replace('\\', '/', $relative) . '.php';
     if (is_file($file)) {
         require $file;
+        return;
+    }
+
+    // Recupera instalaciones copiadas parcialmente durante la separación
+    // de la conexión. El archivo nuevo sigue siendo la fuente principal.
+    if ($class === 'App\\Database\\Connection') {
+        $legacyFile = BASE_PATH . '/app/Core/Database.php';
+        if (is_file($legacyFile)) {
+            require_once $legacyFile;
+            if (!class_exists($class, false)) class_alias(App\Core\Database::class, $class);
+        }
     }
 });
 

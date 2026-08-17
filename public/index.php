@@ -61,5 +61,6 @@ try {
     (new App\Core\Controller())->view('errors/500', [
         'title' => 'Error interno',
         'activeMenu' => '',
+        'diagnostic' => $debug ? $exception->getMessage() : null,
     ]);
 }

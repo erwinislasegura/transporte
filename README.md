@@ -116,6 +116,12 @@ La conexión quedó aislada del núcleo MVC en una carpeta exclusiva:
 
 No deben escribirse credenciales dentro de controladores o modelos. Para cambiar la conexión en XAMPP solo se modifica `.env`.
 
+`app/Core/Database.php` y `config/database.php` se conservan únicamente como puentes de compatibilidad para instalaciones actualizadas parcialmente. La conexión oficial continúa en las carpetas separadas indicadas arriba.
+
+### Diagnóstico de error 500
+
+Si XAMPP muestra un error 500 después de actualizar, confirma que existan `app/Database/Connection.php` y `config/database/connection.php`. Temporalmente configura `APP_DEBUG=true` en `.env`, recarga una vez y revisa el diagnóstico mostrado o `storage/logs/app.log`. Al terminar, vuelve a usar `APP_DEBUG=false`.
+
 ## Alcance de integraciones
 
 La versión deja preparados datos y flujos internos. Las integraciones bancarias, SII, Previred, firma electrónica, geolocalización, app móvil nativa, IA predictiva y contabilidad estatutaria completa siguen como extensiones posteriores, tal como establece el Documento Maestro.
