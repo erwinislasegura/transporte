@@ -5,7 +5,7 @@
 </div>
 <form method="post" action="<?= e(url('/setup')) ?>" class="auth-form">
     <?= csrf_field() ?>
-    <div class="row g-3">
+    <div class="row g-2">
         <div class="col-12"><label class="form-label" for="company_name">Razón social</label><input class="form-control form-control-lg" id="company_name" name="company_name" value="<?= e(old('company_name', 'BGV Enterprise')) ?>" required></div>
         <div class="col-md-6"><label class="form-label" for="company_rut">RUT empresa</label><input class="form-control form-control-lg" id="company_rut" name="company_rut" value="<?= e(old('company_rut')) ?>" placeholder="76.123.456-7" required></div>
         <div class="col-md-6"><label class="form-label" for="full_name">Nombre del Super Administrador</label><input class="form-control form-control-lg" id="full_name" name="full_name" value="<?= e(old('full_name')) ?>" required></div>
