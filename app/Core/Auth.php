@@ -23,9 +23,12 @@ final class Auth
     public static function attempt(string $identity, string $password): bool
     {
         $statement = Connection::connection()->prepare(
-            'SELECT * FROM users WHERE (username = :identity OR email = :identity) AND active = 1 LIMIT 1'
+            'SELECT * FROM users WHERE (username = :username_identity OR email = :email_identity) AND active = 1 LIMIT 1'
         );
-        $statement->execute(['identity' => $identity]);
+        $statement->execute([
+            'username_identity' => $identity,
+            'email_identity' => $identity,
+        ]);
         $user = $statement->fetch();
         if ($user === false || !Security::verifyPassword($password, (string) $user['password_hash'])) {
             return false;

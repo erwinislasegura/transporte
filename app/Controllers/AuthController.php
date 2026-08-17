@@ -69,11 +69,26 @@ final class AuthController extends Controller
             $company = $db->query('SELECT id FROM companies ORDER BY created_at LIMIT 1')->fetch();
             $companyId = $company['id'] ?? Id::uuid();
             if ($company === false) {
-                $statement = $db->prepare('INSERT INTO companies (id, rut, legal_name, trade_name, active) VALUES (:id, :rut, :name, :name, 1)');
-                $statement->execute(['id' => $companyId, 'rut' => $companyRut, 'name' => $companyName]);
+                $statement = $db->prepare(
+                    'INSERT INTO companies (id, rut, legal_name, trade_name, active)
+                     VALUES (:id, :rut, :legal_name, :trade_name, 1)'
+                );
+                $statement->execute([
+                    'id' => $companyId,
+                    'rut' => $companyRut,
+                    'legal_name' => $companyName,
+                    'trade_name' => $companyName,
+                ]);
             } else {
-                $statement = $db->prepare('UPDATE companies SET rut = :rut, legal_name = :name, trade_name = :name WHERE id = :id');
-                $statement->execute(['id' => $companyId, 'rut' => $companyRut, 'name' => $companyName]);
+                $statement = $db->prepare(
+                    'UPDATE companies SET rut = :rut, legal_name = :legal_name, trade_name = :trade_name WHERE id = :id'
+                );
+                $statement->execute([
+                    'id' => $companyId,
+                    'rut' => $companyRut,
+                    'legal_name' => $companyName,
+                    'trade_name' => $companyName,
+                ]);
             }
             $userId = Id::uuid();
             $statement = $db->prepare(
