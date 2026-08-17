@@ -102,6 +102,15 @@ Maestro, Gerencial, Supervisor Operativo, Administrativo, Supervisor Taller, Con
 - Bitácora antes/después para creación, edición, cierre e inicio/cierre de sesión.
 - Registros cerrados o anulados en vez de borrado físico.
 
+## Conexión a la base de datos
+
+La conexión quedó aislada del núcleo MVC en una carpeta exclusiva:
+
+- `app/Database/Connection.php`: crea y reutiliza la conexión PDO.
+- `config/database/connection.php`: lee host, puerto, base, usuario y contraseña desde `.env`.
+
+No deben escribirse credenciales dentro de controladores o modelos. Para cambiar la conexión en XAMPP solo se modifica `.env`.
+
 ## Alcance de integraciones
 
 La versión deja preparados datos y flujos internos. Las integraciones bancarias, SII, Previred, firma electrónica, geolocalización, app móvil nativa, IA predictiva y contabilidad estatutaria completa siguen como extensiones posteriores, tal como establece el Documento Maestro.

@@ -8,7 +8,7 @@ use App\Core\Audit;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Csrf;
-use App\Core\Database;
+use App\Database\Connection;
 use App\Core\Id;
 use App\Core\Security;
 use PDOException;
@@ -63,7 +63,7 @@ final class AuthController extends Controller
             $this->redirect('/setup');
         }
 
-        $db = Database::connection();
+        $db = Connection::connection();
         try {
             $db->beginTransaction();
             $company = $db->query('SELECT id FROM companies ORDER BY created_at LIMIT 1')->fetch();

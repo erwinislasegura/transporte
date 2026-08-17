@@ -6,7 +6,7 @@ namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
-use App\Core\Database;
+use App\Database\Connection;
 use App\Core\RecordRepository;
 use PDOException;
 
@@ -30,24 +30,24 @@ final class DashboardController extends Controller
         $alerts = [];
         $activity = [];
         try {
-            $statement = Database::connection()->prepare(
+            $statement = Connection::connection()->prepare(
                 "SELECT COALESCE(SUM(total),0) billed, COALESCE(SUM(balance),0) receivable
                  FROM customer_invoices WHERE company_id = :company_id AND issue_date >= DATE_FORMAT(CURRENT_DATE, '%Y-%m-01') AND status <> 'Anulada'"
             );
             $statement->execute(['company_id' => $companyId]);
             $financial = array_merge($financial, $statement->fetch() ?: []);
-            $statement = Database::connection()->prepare(
+            $statement = Connection::connection()->prepare(
                 "SELECT COALESCE(SUM(amount),0) expenses FROM financial_movements
                  WHERE company_id = :company_id AND movement_type IN ('Costo','Gasto') AND movement_date >= DATE_FORMAT(CURRENT_DATE, '%Y-%m-01') AND status <> 'Anulado'"
             );
             $statement->execute(['company_id' => $companyId]);
             $financial['expenses'] = (float) $statement->fetchColumn();
-            $statement = Database::connection()->prepare(
+            $statement = Connection::connection()->prepare(
                 "SELECT id, title, severity, due_at, status FROM alerts WHERE company_id = :company_id AND status IN ('Abierta','En gestión') ORDER BY FIELD(severity,'Crítica','Alta','Advertencia','Info'), due_at LIMIT 6"
             );
             $statement->execute(['company_id' => $companyId]);
             $alerts = $statement->fetchAll();
-            $statement = Database::connection()->prepare(
+            $statement = Connection::connection()->prepare(
                 "SELECT a.action, a.module, a.created_at, u.full_name FROM audit_logs a LEFT JOIN users u ON u.id = a.user_id WHERE a.company_id = :company_id ORDER BY a.created_at DESC LIMIT 8"
             );
             $statement->execute(['company_id' => $companyId]);

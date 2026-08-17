@@ -2,11 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Core;
+namespace App\Database;
 
 use PDO;
 
-final class Database
+/**
+ * Punto único de acceso a MySQL/MariaDB.
+ *
+ * La clase vive fuera de Core para mantener la infraestructura de datos
+ * desacoplada del router, autenticación y controladores MVC.
+ */
+final class Connection
 {
     private static ?PDO $connection = null;
 
@@ -16,7 +22,7 @@ final class Database
             return self::$connection;
         }
 
-        $config = require BASE_PATH . '/config/database.php';
+        $config = require BASE_PATH . '/config/database/connection.php';
         $dsn = sprintf(
             'mysql:host=%s;port=%d;dbname=%s;charset=%s',
             $config['host'],

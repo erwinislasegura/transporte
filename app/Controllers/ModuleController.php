@@ -7,7 +7,7 @@ namespace App\Controllers;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Csrf;
-use App\Core\Database;
+use App\Database\Connection;
 use App\Core\Id;
 use App\Core\RecordRepository;
 use App\Core\Security;
@@ -220,7 +220,7 @@ final class ModuleController extends Controller
         }
         if ($module['table'] === 'customer_invoices' && !empty($data['client_id'])) {
             try {
-                $statement = Database::connection()->prepare('SELECT requires_oc, requires_hes FROM clients WHERE id = :id AND company_id = :company_id LIMIT 1');
+                $statement = Connection::connection()->prepare('SELECT requires_oc, requires_hes FROM clients WHERE id = :id AND company_id = :company_id LIMIT 1');
                 $statement->execute(['id' => $data['client_id'], 'company_id' => Auth::companyId()]);
                 $client = $statement->fetch();
                 if (($client['requires_oc'] ?? '') === 'Sí' && empty($data['client_order_id'])) $errors[] = 'Este cliente exige una orden de compra antes de facturar.';

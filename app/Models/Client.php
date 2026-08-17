@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\Database;
+use App\Database\Connection;
 
 final class Client
 {
@@ -14,12 +14,12 @@ final class Client
                        requires_oc, requires_hes, active, created_at
                 FROM clients ORDER BY business_name';
 
-        return Database::connection()->query($sql)->fetchAll();
+        return Connection::connection()->query($sql)->fetchAll();
     }
 
     public static function find(string $id): ?array
     {
-        $statement = Database::connection()->prepare(
+        $statement = Connection::connection()->prepare(
             'SELECT id, company_id, code, rut, business_name, payment_condition,
                     requires_oc, requires_hes, active, created_at
              FROM clients WHERE id = :id LIMIT 1'
@@ -33,7 +33,7 @@ final class Client
     public static function create(array $data): array
     {
         $id = self::uuid();
-        $statement = Database::connection()->prepare(
+        $statement = Connection::connection()->prepare(
             'INSERT INTO clients
                 (id, company_id, code, rut, business_name, payment_condition, requires_oc, requires_hes, active)
              VALUES

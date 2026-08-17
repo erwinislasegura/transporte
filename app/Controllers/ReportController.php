@@ -6,7 +6,7 @@ namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
-use App\Core\Database;
+use App\Database\Connection;
 use PDO;
 use PDOException;
 
@@ -67,7 +67,7 @@ final class ReportController extends Controller
         $metrics = [];
         $clients = [];
         try {
-            $db = Database::connection();
+            $db = Connection::connection();
             foreach ($definitions as [$label,$table,$expression,$dateColumn,$condition,$format,$icon]) {
                 $statement = $db->prepare("SELECT {$expression} FROM {$table} WHERE company_id = :company_id AND DATE({$dateColumn}) BETWEEN :from_date AND :to_date AND {$condition}");
                 $statement->execute(['company_id'=>$companyId,'from_date'=>$from,'to_date'=>$to]);

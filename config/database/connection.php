@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use App\Core\Env;
 
+/*
+ * Las credenciales reales se leen desde .env. Este archivo solo define
+ * el mapa de configuración y valores seguros para XAMPP local.
+ */
 return [
     'host' => (string) Env::get('DB_HOST', '127.0.0.1'),
     'port' => (int) Env::get('DB_PORT', 3306),

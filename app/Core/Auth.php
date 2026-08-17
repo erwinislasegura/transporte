@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Database\Connection;
 use PDOException;
 
 final class Auth
@@ -13,7 +14,7 @@ final class Auth
     public static function hasUsers(): bool
     {
         try {
-            return (int) Database::connection()->query('SELECT COUNT(*) FROM users')->fetchColumn() > 0;
+            return (int) Connection::connection()->query('SELECT COUNT(*) FROM users')->fetchColumn() > 0;
         } catch (PDOException) {
             return false;
         }
@@ -21,7 +22,7 @@ final class Auth
 
     public static function attempt(string $identity, string $password): bool
     {
-        $statement = Database::connection()->prepare(
+        $statement = Connection::connection()->prepare(
             'SELECT * FROM users WHERE (username = :identity OR email = :identity) AND active = 1 LIMIT 1'
         );
         $statement->execute(['identity' => $identity]);
@@ -34,7 +35,7 @@ final class Auth
         $_SESSION['auth_user_id'] = $user['id'];
         self::$user = $user;
         try {
-            $update = Database::connection()->prepare('UPDATE users SET last_login_at = UTC_TIMESTAMP() WHERE id = :id');
+            $update = Connection::connection()->prepare('UPDATE users SET last_login_at = UTC_TIMESTAMP() WHERE id = :id');
             $update->execute(['id' => $user['id']]);
         } catch (PDOException) {
             // Compatible con instalaciones que aún no ejecutan la migración maestra.
@@ -54,7 +55,7 @@ final class Auth
             return null;
         }
 
-        $statement = Database::connection()->prepare('SELECT * FROM users WHERE id = :id AND active = 1 LIMIT 1');
+        $statement = Connection::connection()->prepare('SELECT * FROM users WHERE id = :id AND active = 1 LIMIT 1');
         $statement->execute(['id' => $id]);
         $user = $statement->fetch();
         self::$user = $user === false ? null : $user;

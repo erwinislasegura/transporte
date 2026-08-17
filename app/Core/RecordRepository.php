@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Database\Connection;
 use PDO;
 use PDOException;
 
@@ -32,7 +33,7 @@ final class RecordRepository
         }
 
         $sql = "SELECT * FROM {$table}" . ($where === [] ? '' : ' WHERE ' . implode(' AND ', $where)) . ' ORDER BY created_at DESC LIMIT 250';
-        $statement = Database::connection()->prepare($sql);
+        $statement = Connection::connection()->prepare($sql);
         $statement->execute($params);
 
         return $statement->fetchAll();
@@ -48,7 +49,7 @@ final class RecordRepository
             $params['company_id'] = $companyId;
         }
         $sql .= ' LIMIT 1';
-        $statement = Database::connection()->prepare($sql);
+        $statement = Connection::connection()->prepare($sql);
         $statement->execute($params);
         $record = $statement->fetch();
 
@@ -80,7 +81,7 @@ final class RecordRepository
 
         $placeholders = array_map(static fn(string $column): string => ':' . $column, $columns);
         $sql = "INSERT INTO {$table} (" . implode(', ', $columns) . ') VALUES (' . implode(', ', $placeholders) . ')';
-        $statement = Database::connection()->prepare($sql);
+        $statement = Connection::connection()->prepare($sql);
         $statement->execute($values);
         $record = self::find($module, $id, $companyId) ?? [];
         Audit::log('record.created', $table, $id, null, $record);
@@ -111,7 +112,7 @@ final class RecordRepository
             $sql .= ' AND company_id = :company_id';
             $params['company_id'] = $companyId;
         }
-        $statement = Database::connection()->prepare($sql);
+        $statement = Connection::connection()->prepare($sql);
         $statement->execute($params);
         $after = self::find($module, $id, $companyId) ?? [];
         Audit::log('record.updated', $table, $id, $before, $after);
@@ -139,7 +140,7 @@ final class RecordRepository
             $sql .= ' AND company_id = :company_id';
             $params['company_id'] = $companyId;
         }
-        Database::connection()->prepare($sql)->execute($params);
+        Connection::connection()->prepare($sql)->execute($params);
         Audit::log('record.archived', $table, $id, $before, self::find($module, $id, $companyId));
     }
 
@@ -149,10 +150,10 @@ final class RecordRepository
         $value = self::identifier($relation['value']);
         $label = self::identifier($relation['label']);
         try {
-            $statement = Database::connection()->prepare("SELECT {$value}, {$label} FROM {$table} WHERE company_id = :company_id ORDER BY {$label} LIMIT 500");
+            $statement = Connection::connection()->prepare("SELECT {$value}, {$label} FROM {$table} WHERE company_id = :company_id ORDER BY {$label} LIMIT 500");
             $statement->execute(['company_id' => $companyId]);
         } catch (PDOException) {
-            $statement = Database::connection()->query("SELECT {$value}, {$label} FROM {$table} ORDER BY {$label} LIMIT 500");
+            $statement = Connection::connection()->query("SELECT {$value}, {$label} FROM {$table} ORDER BY {$label} LIMIT 500");
         }
 
         return $statement->fetchAll(PDO::FETCH_KEY_PAIR);
@@ -168,7 +169,7 @@ final class RecordRepository
             $params['company_id'] = $companyId;
         }
         try {
-            $statement = Database::connection()->prepare($sql);
+            $statement = Connection::connection()->prepare($sql);
             $statement->execute($params);
             return (int) $statement->fetchColumn();
         } catch (PDOException) {
@@ -185,7 +186,7 @@ final class RecordRepository
             $sql .= ' WHERE company_id = :company_id';
             $params['company_id'] = $companyId;
         }
-        $statement = Database::connection()->prepare($sql);
+        $statement = Connection::connection()->prepare($sql);
         $statement->execute($params);
         $sequence = (int) $statement->fetchColumn();
         $prefix = (string) $module['prefix'];

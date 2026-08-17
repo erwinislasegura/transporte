@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Database\Connection;
 use PDOException;
 
 final class Audit
@@ -11,7 +12,7 @@ final class Audit
     public static function log(string $action, string $module, ?string $recordId = null, ?array $before = null, ?array $after = null): void
     {
         try {
-            $statement = Database::connection()->prepare(
+            $statement = Connection::connection()->prepare(
                 'INSERT INTO audit_logs (id, company_id, user_id, module, record_id, action, previous_data, new_data, ip_address)
                  VALUES (:id, :company_id, :user_id, :module, :record_id, :action, :previous_data, :new_data, :ip_address)'
             );
