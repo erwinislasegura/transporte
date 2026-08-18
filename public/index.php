@@ -10,6 +10,7 @@ use App\Controllers\DashboardController;
 use App\Controllers\AuthController;
 use App\Controllers\ModuleController;
 use App\Controllers\ReportController;
+use App\Controllers\RoleController;
 use App\Core\Cors;
 use App\Core\Router;
 
@@ -31,6 +32,12 @@ $router->get('/reports/export', [ReportController::class, 'export']);
 $router->get('/clients', static fn() => header('Location: ' . url('/modules/clients')));
 $router->get('/clients/create', static fn() => header('Location: ' . url('/modules/clients/create')));
 $router->get('/clients/{id}', static fn(string $id) => header('Location: ' . url('/modules/clients/' . rawurlencode($id))));
+
+$router->get('/roles', [RoleController::class, 'index']);
+$router->get('/roles/create', [RoleController::class, 'create']);
+$router->post('/roles', [RoleController::class, 'store']);
+$router->get('/roles/{id}/edit', [RoleController::class, 'edit']);
+$router->post('/roles/{id}', [RoleController::class, 'update']);
 
 $router->get('/modules/{slug}', [ModuleController::class, 'index']);
 $router->get('/modules/{slug}/create', [ModuleController::class, 'create']);
