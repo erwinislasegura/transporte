@@ -13,9 +13,6 @@ final class Auth
 
     public static function hasUsers(): bool
     {
-        // Un error de conexión o de esquema no equivale a una instalación vacía.
-        // La excepción debe llegar al manejador global para evitar abrir el
-        // configurador por accidente en producción.
         return (int) Connection::connection()->query('SELECT COUNT(*) FROM users')->fetchColumn() > 0;
     }
 
@@ -29,9 +26,7 @@ final class Auth
             'email_identity' => $identity,
         ]);
         $user = $statement->fetch();
-        if ($user === false || !Security::verifyPassword($password, (string) $user['password_hash'])) {
-            return false;
-        }
+        if ($user === false || !Security::verifyPassword($password, (string) $user['password_hash'])) return false;
 
         session_regenerate_id(true);
         $_SESSION['auth_user_id'] = $user['id'];
@@ -43,25 +38,19 @@ final class Auth
             // Compatible con instalaciones que aún no ejecutan la migración maestra.
         }
         Audit::log('auth.login', 'users', (string) $user['id']);
-
         return true;
     }
 
     public static function user(): ?array
     {
-        if (self::$user !== null) {
-            return self::$user;
-        }
+        if (self::$user !== null) return self::$user;
         $id = $_SESSION['auth_user_id'] ?? null;
-        if (!is_string($id) || $id === '') {
-            return null;
-        }
+        if (!is_string($id) || $id === '') return null;
 
         $statement = Connection::connection()->prepare('SELECT * FROM users WHERE id = :id AND active = 1 LIMIT 1');
         $statement->execute(['id' => $id]);
         $user = $statement->fetch();
         self::$user = $user === false ? null : $user;
-
         return self::$user;
     }
 
@@ -91,15 +80,15 @@ final class Auth
     public static function can(string $area, string $action = 'view'): bool
     {
         $role = (string) (self::user()['role'] ?? '');
-        $roles = require BASE_PATH . '/config/roles.php';
-        $grants = $roles[$role] ?? [];
-        if (in_array('*', $grants, true)) {
-            return true;
+        $grants = RoleManager::permissions($role);
+        if (in_array('*', $grants, true)) return true;
+        if (in_array($area, $grants, true)) return true;
+        if (in_array($area . '.' . $action, $grants, true)) return true;
+        if ($action === 'view') {
+            return in_array($area . '.manage', $grants, true)
+                || in_array($area . '.own', $grants, true);
         }
-
-        return in_array($area, $grants, true)
-            || in_array($area . '.' . $action, $grants, true)
-            || ($action === 'view' && in_array($area . '.own', $grants, true));
+        return false;
     }
 
     public static function requirePermission(string $area, string $action = 'view'): void
@@ -114,9 +103,7 @@ final class Auth
 
     public static function logout(): void
     {
-        if (self::id() !== null) {
-            Audit::log('auth.logout', 'users', self::id());
-        }
+        if (self::id() !== null) Audit::log('auth.logout', 'users', self::id());
         unset($_SESSION['auth_user_id']);
         self::$user = null;
         session_regenerate_id(true);
