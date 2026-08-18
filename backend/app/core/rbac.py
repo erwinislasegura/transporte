@@ -1,4 +1,6 @@
 from collections.abc import Callable
+from uuid import UUID
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -33,10 +35,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     )
     try:
         payload = jwt.decode(token, get_settings().jwt_secret_key, algorithms=[ALGORITHM])
-        user_id = payload.get('sub')
-        if not user_id:
+        subject = payload.get('sub')
+        if not subject:
             raise credentials_error
-    except JWTError as exc:
+        user_id = UUID(subject)
+    except (JWTError, ValueError, TypeError) as exc:
         raise credentials_error from exc
 
     user = db.scalar(select(User).where(User.id == user_id))
