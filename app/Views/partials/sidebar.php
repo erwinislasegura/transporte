@@ -14,6 +14,9 @@ $groupIcons = [
         <i class="bi bi-grid-1x2-fill"></i><span>Centro de Control</span>
     </a>
     <?php if (\App\Core\Auth::can('bi')): ?><a class="sidebar-link <?= ($activeMenu ?? '') === 'reports' ? 'active' : '' ?>" href="<?= e(url('/reports')) ?>"><i class="bi bi-bar-chart-line"></i><span>Reportes ejecutivos</span></a><?php endif; ?>
+    <?php if (\App\Core\Auth::can('security', 'manage')): ?>
+        <a class="sidebar-link <?= ($activeMenu ?? '') === 'roles' ? 'active' : '' ?>" href="<?= e(url('/roles')) ?>"><i class="bi bi-shield-lock"></i><span>Roles y permisos</span></a>
+    <?php endif; ?>
     <?php foreach ($groups as $group => $items):
         $expanded = array_key_exists((string) ($activeMenu ?? ''), $items);
         $collapseId = 'nav-' . substr(sha1($group), 0, 8);
