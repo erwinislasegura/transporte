@@ -1,7 +1,8 @@
 <?php
 $isEdit = $mode === 'edit';
-$selected = old('permissions', $role['permissions'] ?? []);
-if (!is_array($selected)) $selected = $role['permissions'] ?? [];
+$oldPermissions = $_SESSION['_old']['permissions'] ?? null;
+$selected = is_array($oldPermissions) ? $oldPermissions : ($role['permissions'] ?? []);
+if (!is_array($selected)) $selected = [];
 $isProtected = (int) ($role['protected'] ?? 0) === 1;
 ?>
 <div class="page-intro page-intro-actions">
